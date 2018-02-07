@@ -3,6 +3,7 @@ import json
 
 conn = sqlite3.connect('ChatBot.db')
 c = conn.cursor()
+c.execute("CREATE TABLE IF NOT EXISTS chat_state (chat_id integer PRIMARY_KEY,intent text NOT NULL,context text NOT NULL,entities text NOT NULL,step integer DEFAULT 0);")
 
 def update_chat_id_state(chat_id_state_data,chat_id): # input parameter json format
     if ('intent' in chat_id_state_data):
