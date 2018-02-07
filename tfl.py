@@ -28,6 +28,7 @@ def getNearbytubes(location):
     url = URL + 'StopPoint'
     payload =  {'stopTypes':'NaptanMetroStation',
                 'modes':'tube',
+                'radius':1500,
                 'lat':float(location['latitude']),
                 'lon':float(location['longitude'])
                 }
