@@ -26,14 +26,22 @@ def getTubeStatus():
 def getNearbytubes(location):
     nearbyTubes = []
     url = URL + 'StopPoint'
-    payload =  {'stopTypes':'NaptanMetroStation',
-                'modes':'tube',
-                'radius':1500,
-                'lat':float(location['latitude']),
-                'lon':float(location['longitude'])
-                }
+    noOfStopPoints = 0
+    radius = 1000
 
-    js = get_json_from_url(url,payload)
+    while (noOfStopPoints==0 and radius<3000):
+        payload =  {'stopTypes':'NaptanMetroStation',
+                    'modes':'tube',
+                    'radius':radius,
+                    'lat':float(location['latitude']),
+                    'lon':float(location['longitude'])
+                    }
+        js = get_json_from_url(url,payload)
+        if(len(js['stopPoints'])>0):
+            noOfStopPoints+=len(js['stopPoints'])
+        radius+=300
+        print(noOfStopPoints,radius)
+
     for i in range(len(js['stopPoints'])):
         id = js['stopPoints'][i]['id']
         commonName = js['stopPoints'][i]['commonName']
@@ -55,17 +63,27 @@ def getLinesServingStation(tube_station_id):
 def getNextTrainArrivals(tube_station_id, lines):
     trainArrivals = []
     time_a = 999999
+    a_dest = 'N/A'
     time_b = 999999
+    b_dest = 'N/A'
+    time_c = 999999
+    c_dest = 'N/A'
     for line in lines:
         url = URL + 'Line/' + line + '/Arrivals/' + tube_station_id
         js = get_json_from_url(url)
         for i in range(len(js)):
             if (time_a>js[i]['timeToStation']):
                 time_a=js[i]['timeToStation']
+                a_dest=js[i]['towards']
         for i in range(len(js)):
             if (time_b>js[i]['timeToStation'] and js[i]['timeToStation']!=time_a):
                 time_b=js[i]['timeToStation']
-        nextTrainByLine = {'line':line, 'next_arrival':str(round(time_a/60,1))+', '+str(round(time_b/60,1))}
+                b_dest=js[i]['towards']
+        for i in range(len(js)):
+            if (time_c>js[i]['timeToStation'] and js[i]['timeToStation']!=time_a and js[i]['timeToStation']!=time_b):
+                time_c=js[i]['timeToStation']
+                c_dest=js[i]['towards']
+        nextTrainByLine = {'line':line, 'next_arrival':[round(time_a/60,1),round(time_b/60,1),round(time_c/60,1)], 'towards':[a_dest,b_dest,c_dest]}
         trainArrivals.append(nextTrainByLine)
 
     return trainArrivals

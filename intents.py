@@ -54,10 +54,13 @@ def processExistingIntent(step,intent,entities,chat_id):
                     for i in range(len(trainArrivals)):
                         message+=trainArrivals[i]['line']
                         message+=' line - '
-                        message+=trainArrivals[i]['next_arrival']
-                        message+=' minutes\n'
-
-                    message+='\n\n'
+                        for j in range(len(trainArrivals[i]['next_arrival'])):
+                            message+=str(trainArrivals[i]['next_arrival'][j])
+                            message+=' min ('
+                            message+=trainArrivals[i]['towards'][j]
+                            message+='), '
+                        message+='\n'
+                    message+='\n'
 
                 reply_markup = '{"remove_keyboard":true}'
                 # Last step of intent flow
