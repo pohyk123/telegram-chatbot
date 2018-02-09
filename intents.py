@@ -40,20 +40,22 @@ def processExistingIntent(step,intent,entities,chat_id):
                 entitiesTemp=entitiesTemp.replace("'", '"')
                 userLocation = json.loads(entitiesTemp)
                 # use tfl api to find out next tube timings
-                message+='Here are the train arrival estimates near your location.'
+                message+='Here are the train arrival estimates near your location.\n'
                 message+='\n'
                 nearbyTubes = tfl.getNearbytubes(userLocation)
                 for nearbyTube in nearbyTubes:
+                    message+='<i>'
                     message+=nearbyTube['commonName']
-                    message+=' ('
+                    message+='</i> ('
                     message+=str(nearbyTube['dist'])
                     message+=' metres away)'
                     message+='\n'
                     lines = tfl.getLinesServingStation(nearbyTube['id'])
                     trainArrivals = tfl.getNextTrainArrivals(nearbyTube['id'],lines)
                     for i in range(len(trainArrivals)):
+                        message+='<b>['
                         message+=trainArrivals[i]['line']
-                        message+=' line - '
+                        message+=' line] </b>- '
                         for j in range(len(trainArrivals[i]['next_arrival'])):
                             message+=str(trainArrivals[i]['next_arrival'][j])
                             message+=' min ('

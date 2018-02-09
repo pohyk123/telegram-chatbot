@@ -14,14 +14,14 @@ TOKEN = config.telegram_bot_token
 URL = 'https://api.telegram.org/bot{}/'.format(TOKEN)
 
 
-def get_url(url):
-    response = requests.get(url)
+def get_url(url,payload=None):
+    response = requests.get(url, params=payload)
     content = response.content.decode('utf8')
     return content
 
 
-def get_json_from_url(url):
-    content = get_url(url)
+def get_json_from_url(url,payload=None):
+    content = get_url(url,payload)
     js = json.loads(content)
     return js
 
@@ -56,9 +56,9 @@ def get_last_chat_id_and_text(updates):
     return (text, chat_id)
 
 
-def send_message(text, chat_id, reply_markup='{}'):
+def send_message(text, chat_id, reply_markup='{}', parse_mode='HTML'):
     text = urllib.parse.quote_plus(text)
-    url = URL + 'sendMessage?text={}&chat_id={}&reply_markup={}'.format(text, chat_id, reply_markup)
+    url = URL + 'sendMessage?text={}&chat_id={}&reply_markup={}&parse_mode={}'.format(text, chat_id, reply_markup, parse_mode)
     get_url(url)
 
 

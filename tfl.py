@@ -27,9 +27,9 @@ def getNearbytubes(location):
     nearbyTubes = []
     url = URL + 'StopPoint'
     noOfStopPoints = 0
-    radius = 1000
+    radius = 500
 
-    while (noOfStopPoints==0 and radius<3000):
+    while (noOfStopPoints<3 and radius<3000):
         payload =  {'stopTypes':'NaptanMetroStation',
                     'modes':'tube',
                     'radius':radius,
@@ -38,9 +38,8 @@ def getNearbytubes(location):
                     }
         js = get_json_from_url(url,payload)
         if(len(js['stopPoints'])>0):
-            noOfStopPoints+=len(js['stopPoints'])
-        radius+=300
-        print(noOfStopPoints,radius)
+            noOfStopPoints=len(js['stopPoints'])
+        radius+=200
 
     for i in range(len(js['stopPoints'])):
         id = js['stopPoints'][i]['id']
