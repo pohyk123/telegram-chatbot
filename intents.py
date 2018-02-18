@@ -71,6 +71,7 @@ def processExistingIntent(step,intent,entities,chat_id):
             except Exception as e:
                 print(e)
                 message = 'Invalid step input. Resetting all contexts & steps.'
+                reply_markup = '{"remove_keyboard":true}'
                 success = False
                 endOfFlow(chat_id)
 
@@ -86,7 +87,6 @@ def processNewIntent(intent,context,entities,chat_id):
     message = ''
     success = True
     step=0
-
     # hard code logic
     if(context == 'tube'):
         if (intent == 'Retrieve Tube Status'):
@@ -95,11 +95,17 @@ def processNewIntent(intent,context,entities,chat_id):
                 message+=line['id']+': '+line['status']
                 message+='\n'
         elif (intent == 'Retrieve next Tube Timings'):
-            message+='Location required; please click on button below.'
+            message+='Location required; please click on button below. Please be patient while the server attempts to retrieve incoming train timings.'
             reply_markup = '{"keyboard":[[{"text":"Send current location","request_location":true}]],"one_time_keyboard":true}'
             step+=1
+
+    elif(intent == 'display menu'):
+        message+='Hello there! Here are some available options for you!'
+        reply_markup='{"inline_keyboard":[[{"text":"Get Tube Status","callback_data":"Get tube status"}],[{"text":"Get Tube Timings","callback_data":"Get tube timings"}]]}'
+
     else:
         message+='No matching intents. Please key in a valid request.'
+        reply_markup = '{"remove_keyboard":true}'
         success = False
         endOfFlow(chat_id)
 
@@ -145,10 +151,12 @@ def classifyMessageParts(message):
     entities = []
     if ('tube' in message):
         context = 'tube'
-        if ('status' in message):
+        if ('status' in message or 'update' in message):
             intent = 'Retrieve Tube Status'
         if ('time' in message or 'timings' in message):
             intent = 'Retrieve next Tube Timings'
+    if ('hi' in message or 'hey' in message or 'hello' in message or 'help' in message):
+        intent = 'display menu'
 
     entities = message.split()
     components = {'context':context,'intent':intent,'entities':entities}

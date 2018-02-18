@@ -77,11 +77,15 @@ def validate_bot():
 def get_responses(updates):
     responses = []
     for update in updates['result']:
-        if ('location' in update['message']):
-            text = str(update['message']['location'])
-        elif ('text' in update['message']):
-            text = update['message']['text']
-        chat_id = update['message']['chat']['id']
+        if('callback_query' in update):
+            text = update['callback_query']['data']
+            chat_id = update['callback_query']['message']['chat']['id']
+        else:
+            if ('location' in update['message']):
+                text = str(update['message']['location'])
+            elif ('text' in update['message']):
+                text = update['message']['text']
+            chat_id = update['message']['chat']['id']
         response = {'response':intents.getIntentResponse(text,chat_id),'chat_id':chat_id}
         responses.append(response)
     return responses
@@ -109,14 +113,14 @@ def main():
     print('Bot ID: '+ str(botStat['id']))
 
     while True:
-        try:
-            updates = get_updates(last_update_id)
-            print(updates)
-            if len(updates['result']) > 0:
-                last_update_id = get_last_update_id(updates) + 1
-                responses = get_responses(updates)
-                reply_to_sender(responses)
-        except: {}
+        # try:
+        updates = get_updates(last_update_id)
+        print(updates)
+        if len(updates['result']) > 0:
+            last_update_id = get_last_update_id(updates) + 1
+            responses = get_responses(updates)
+            reply_to_sender(responses)
+        # except: {}
         time.sleep(2)
 
 if __name__ == '__main__':
