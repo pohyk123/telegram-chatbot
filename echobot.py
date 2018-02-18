@@ -113,14 +113,14 @@ def main():
     print('Bot ID: '+ str(botStat['id']))
 
     while True:
-        # try:
-        updates = get_updates(last_update_id)
-        print(updates)
-        if len(updates['result']) > 0:
-            last_update_id = get_last_update_id(updates) + 1
-            responses = get_responses(updates)
-            reply_to_sender(responses)
-        # except: {}
+        try:
+            updates = get_updates(last_update_id)
+            print(updates)
+            if len(updates['result']) > 0:
+                last_update_id = get_last_update_id(updates) + 1
+                responses = get_responses(updates)
+                reply_to_sender(responses)
+        except: {}
         time.sleep(2)
 
 if __name__ == '__main__':
