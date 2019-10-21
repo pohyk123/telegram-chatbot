@@ -1,4 +1,4 @@
-nltk==3.2.5
+nltk==3.4.5
 oauthlib==1.0.3
 pythonlangutil==0.1
 rake-nltk==1.0.2
