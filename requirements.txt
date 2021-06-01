@@ -5,4 +5,4 @@ rake-nltk==1.0.2
 requests==2.9.1
 
 unattended-upgrades==0.1
-urllib3==1.13.1
+urllib3==1.26.5
